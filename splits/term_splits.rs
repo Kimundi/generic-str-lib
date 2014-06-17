@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, slice, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrExt};
 use super::{splits_next, splits_next_back};
 
 pub struct TermSplits<M> {
@@ -19,7 +19,7 @@ impl<'a, M: LeftMatcher<'a>> Iterator<&'a str> for TermSplits<M> {
         loop {
             match splits_next(&mut self.splits) {
                 Some((a, b)) if a == b && b == string.len() => continue,
-                Some((a, b)) => return Some(slice(string, a, b)),
+                Some((a, b)) => return Some(string.slice(a, b)),
                 None => return None
             }
         }
@@ -32,7 +32,7 @@ impl<'a, M: Matcher<'a>> DoubleEndedIterator<&'a str> for TermSplits<M> {
         loop {
             match splits_next_back(&mut self.splits) {
                 Some((a, b)) if a == b && b == string.len() => continue,
-                Some((a, b)) => return Some(slice(string, a, b)),
+                Some((a, b)) => return Some(string.slice(a, b)),
                 None => return None
             }
         }

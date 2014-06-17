@@ -1,4 +1,4 @@
-use super::{Pattern, LeftMatcher, Matcher, slice, StrExt};
+use super::{Pattern, LeftMatcher, Matcher, StrExt};
 
 pub use self::nsplits::NSplits;
 pub use self::rnsplits::RNSplits;
@@ -74,7 +74,7 @@ impl<'a, M: LeftMatcher<'a>> Iterator<&'a str> for Splits<M> {
     fn next(&mut self) -> Option<&'a str> {
         let string = self.matcher.get_haystack();
         splits_next(self).map(|(a, b)| {
-            slice(string, a, b)
+            string.slice(a, b)
         })
     }
 }
@@ -83,7 +83,7 @@ impl<'a, M: Matcher<'a>> DoubleEndedIterator<&'a str> for Splits<M> {
     fn next_back(&mut self) -> Option<&'a str> {
         let string = self.matcher.get_haystack();
         splits_next_back(self).map(|(a, b)| {
-            slice(string, a, b)
+            string.slice(a, b)
         })
     }
 }

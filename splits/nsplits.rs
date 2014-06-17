@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, slice_from, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Splits, StrExt};
 
 pub struct NSplits<M> {
     splits: Splits<M>,
@@ -23,7 +23,7 @@ impl<'a, M: LeftMatcher<'a>> Iterator<&'a str> for NSplits<M> {
                 None
             } else {
                 self.splits.finished = true;
-                Some(slice_from(s, start))
+                Some(s.slice_from(start))
             }
         } else {
             self.count -= 1;

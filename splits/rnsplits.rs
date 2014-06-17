@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, slice_to, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrExt};
 
 pub struct RNSplits<M> {
     splits: Splits<M>,
@@ -23,7 +23,7 @@ impl<'a, M: Matcher<'a>> Iterator<&'a str> for RNSplits<M> {
                 None
             } else {
                 self.splits.finished = true;
-                Some(slice_to(s, end))
+                Some(s.slice_to(end))
             }
         } else {
             self.count -= 1;
