@@ -1,6 +1,6 @@
-pub use traits::{Matcher, LeftMatcher, Pattern};
-pub use matches::{Matches, MatchIndices};
-pub use splits::{Splits, NSplits, RNSplits, TermSplits};
+pub use self::traits::{Matcher, LeftMatcher, Pattern};
+pub use self::matches::{Matches, MatchIndices};
+pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
 
 mod traits;
 
