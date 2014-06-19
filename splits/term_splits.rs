@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrSlice_};
 use super::{splits_next, splits_next_back};
 
 pub struct TermSplits<M> {

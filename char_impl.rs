@@ -1,35 +1,5 @@
 use super::{Pattern, LeftMatcher, Matcher, Fragment};
-use super::util::OffsetSlice;
-
-struct Utf8Char {
-    chr: [u8, ..4],
-    len: u8
-}
-
-impl Utf8Char {
-    #[inline]
-    fn new(chr: char) -> Utf8Char {
-        let mut buf = [08, ..4];
-        let len = chr.encode_utf8(buf.as_mut_slice());
-        Utf8Char { chr: buf, len: len as u8 }
-    }
-
-    #[inline]
-    fn as_str<'a>(&'a self) -> &'a str {
-        unsafe {
-            ::std::mem::transmute(::std::raw::Slice {
-                data: &self.chr as *_ as *u8,
-                len: self.len as uint
-            })
-        }
-    }
-
-    #[inline]
-    fn as_bytes<'a>(&'a self) -> &'a [u8] {
-        self.as_str().as_bytes()
-    }
-
-}
+use super::{OffsetSlice, Utf8Char};
 
 struct CharMatcher<'a> {
     cursor: OffsetSlice<'a>,
@@ -63,15 +33,15 @@ impl<'a> Matcher<'a> for CharMatcher<'a> {
     }
 }
 
-impl<'a> Fragment<'a, CharMatcher<'a>> for char {
-    fn write_fragment(self, f: |&str|) {
-        f(Utf8Char::new(self).as_str())
+impl Fragment for char {
+    fn write_fragment<T>(&self, f: |&str| -> T) -> T {
+        f(Utf8Char::new(*self).as_str())
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::super::StrExt;
+    use super::super::StrSlice_;
     use std::prelude::{Vec, Iterator, DoubleEndedIterator};
 
     #[test]

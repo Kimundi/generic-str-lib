@@ -1,4 +1,4 @@
-use super::StrExt;
+use super::{StrSlice_, StrAllocating_, StringExtension};
 
 #[test]
 fn test_starts_with() {
@@ -56,4 +56,21 @@ fn test_replace() {
     assert_eq!("a"._replace("a", "b").as_slice(), "b");
     assert_eq!("a"._replace('?', "b").as_slice(), "a");
     assert_eq!("a"._replace('a', "b").as_slice(), "b");
+
+    assert_eq!("a"._replace("?", 'b').as_slice(), "a");
+    assert_eq!("a"._replace("a", 'b').as_slice(), "b");
+    assert_eq!("a"._replace('?', 'b').as_slice(), "a");
+    assert_eq!("a"._replace('a', 'b').as_slice(), "b");
+}
+
+#[test]
+fn test_string_extension() {
+    let mut s = String::new();
+    s.push("foo");
+    s.push('!');
+    assert_eq!(s.as_slice(), "foo!");
+    let s: String = StringExtension::from_fragment("foo");
+    assert_eq!(s.as_slice(), "foo");
+    let s: String = StringExtension::from_fragment('!');
+    assert_eq!(s.as_slice(), "!");
 }

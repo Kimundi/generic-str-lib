@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Splits, StrSlice_};
 
 pub struct NSplits<M> {
     splits: Splits<M>,

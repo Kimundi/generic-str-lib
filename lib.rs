@@ -2,11 +2,10 @@ pub use self::traits::{Matcher, LeftMatcher, Pattern, Fragment};
 pub use self::matches::{Matches, MatchIndices};
 pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
 
+// Matcher and Fragement defintions
 mod traits;
 
-mod matches;
-mod splits;
-
+// Matcher and Fragment implementations
 mod char_impl;
 mod str_impl;
 mod regex_impl;
@@ -14,12 +13,14 @@ mod char_closure_impl;
 mod char_fn_impl;
 mod char_slice_impl;
 
-mod util;
-
 #[cfg(test)]
 mod tests;
 
-pub trait StrExt<'a> {
+// StrSlice support implementations
+mod matches;
+mod splits;
+
+pub trait StrSlice_<'a> {
     fn _contains<'a, M, P: Pattern<'a, M>>(self, pat: P) -> bool;
 
     fn _matches<M, P: Pattern<'a, M>>(self, pat: P) -> Matches<M>;
@@ -43,11 +44,9 @@ pub trait StrExt<'a> {
     fn _rfind<M: Matcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> Option<uint> {
         self._match_indices(pat).rev().next().map(|(a, _)| a)
     }
-
-    fn _replace<'a, M: LeftMatcher<'a>, P: Pattern<'a, M>>(self, pat: P, to: &str) -> String;
 }
 
-impl<'a> StrExt<'a> for &'a str {
+impl<'a> StrSlice_<'a> for &'a str {
     fn _contains<M, P: Pattern<'a, M>>(self, pat: P) -> bool {
         pat.is_contained_in(self)
     }
@@ -120,17 +119,122 @@ impl<'a> StrExt<'a> for &'a str {
         }
         self.slice(i, j)
     }
+}
 
-    fn _replace<M: LeftMatcher<'a>, P: Pattern<'a, M>>(self, pat: P, to: &str) -> String {
+pub trait StrAllocating_<'a> {
+    fn _replace<'a, M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String;
+}
+
+impl<'a> StrAllocating_<'a> for &'a str {
+    fn _replace<M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String {
         let mut buf = String::new();
         let mut first = true;
         for segment in self._split(pat) {
             if !first {
-                buf.push_str(to);
+                with.write_fragment(|s|
+                    buf.push_str(s)
+                );
             }
             first = false;
             buf.push_str(segment);
         }
         buf
     }
+}
+
+pub trait StringExtension {
+    fn from_fragment<F: Fragment>(f: F) -> Self;
+    fn push<F: Fragment>(&mut self, f: F);
+}
+
+impl StringExtension for String {
+    fn from_fragment<F: Fragment>(f: F) -> String {
+        f.write_fragment(|s|
+            String::from_str(s)
+        )
+    }
+
+    fn push<F: Fragment>(&mut self, f: F) {
+        f.write_fragment(|s|
+            self.push_str(s)
+        )
+    }
+}
+
+pub struct OffsetSlice<'a> {
+    slice: &'a str,
+    start: uint,
+    end: uint,
+}
+
+impl<'a> OffsetSlice<'a> {
+    #[inline]
+    pub fn new(s: &'a str) -> OffsetSlice<'a> {
+        OffsetSlice {
+            slice: s,
+            start: 0,
+            end: s.len()
+        }
+    }
+
+    #[inline]
+    pub fn find_front(&mut self, buf: &[u8]) -> Option<(uint, uint)> {
+        while self.start < self.end {
+            let start = self.start;
+            self.start += 1;
+
+            if self.slice.as_bytes().slice_from(start).starts_with(buf) {
+                return Some((start, start + buf.len()));
+            }
+        }
+        None
+    }
+
+    #[inline]
+    pub fn find_back(&mut self, buf: &[u8]) -> Option<(uint, uint)> {
+        while self.start < self.end {
+            let end = self.end;
+            self.end -= 1;
+
+            if self.slice.as_bytes().slice_to(end).ends_with(buf) {
+                return Some((end - buf.len(), end));
+            }
+        }
+        None
+    }
+
+    #[inline]
+    pub fn original_str(self) -> &'a str {
+        self.slice
+    }
+}
+
+pub struct Utf8Char {
+    chr: [u8, ..4],
+    len: u8
+}
+
+impl Utf8Char {
+    #[inline]
+    pub fn new(chr: char) -> Utf8Char {
+        let mut buf = [08, ..4];
+        let len = chr.encode_utf8(buf.as_mut_slice());
+        Utf8Char { chr: buf, len: len as u8 }
+    }
+
+    #[inline]
+    pub fn as_str<'a>(&'a self) -> &'a str {
+        unsafe {
+            ::std::mem::transmute(::std::raw::Slice {
+                data: &self.chr as *_ as *u8,
+                len: self.len as uint
+            })
+        }
+    }
+
+    #[inline]
+    pub fn as_bytes<'a>(&'a self) -> &'a [u8] {
+        self.as_str().as_bytes()
+    }
+
 }

@@ -52,7 +52,7 @@ impl<'a> Matcher<'a> for CharFnPredLeftMatcher<'a> {
 }
 #[cfg(test)]
 mod tests {
-    use super::super::StrExt;
+    use super::super::StrSlice_;
     use std::prelude::{Vec, Iterator, DoubleEndedIterator};
 
     #[test]

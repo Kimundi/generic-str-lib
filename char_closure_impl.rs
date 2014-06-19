@@ -1,14 +1,14 @@
 use super::{Pattern, LeftMatcher, Matcher};
 use std::str::CharOffsets;
 
-struct CharClPredLeftMatcher<'a, 'b> {
+struct CharClPredMatcher<'a, 'b> {
     str: &'a str,
     chars: CharOffsets<'a>,
     pred: |char|:'b -> bool
 }
-impl<'a, 'b> Pattern<'a, CharClPredLeftMatcher<'a, 'b>> for |char|:'b -> bool {
-    fn into_matcher(self, s: &'a str) -> CharClPredLeftMatcher<'a, 'b> {
-        CharClPredLeftMatcher {
+impl<'a, 'b> Pattern<'a, CharClPredMatcher<'a, 'b>> for |char|:'b -> bool {
+    fn into_matcher(self, s: &'a str) -> CharClPredMatcher<'a, 'b> {
+        CharClPredMatcher {
             str: s,
             chars: s.char_indices(),
             pred: self
@@ -18,7 +18,7 @@ impl<'a, 'b> Pattern<'a, CharClPredLeftMatcher<'a, 'b>> for |char|:'b -> bool {
         self.into_matcher(s).next_match().is_some()
     }
 }
-impl<'a, 'b> LeftMatcher<'a> for CharClPredLeftMatcher<'a, 'b> {
+impl<'a, 'b> LeftMatcher<'a> for CharClPredMatcher<'a, 'b> {
     fn get_haystack(&self) -> &'a str {
         self.str
     }
@@ -36,7 +36,7 @@ impl<'a, 'b> LeftMatcher<'a> for CharClPredLeftMatcher<'a, 'b> {
         None
     }
 }
-impl<'a, 'b> Matcher<'a> for CharClPredLeftMatcher<'a, 'b> {
+impl<'a, 'b> Matcher<'a> for CharClPredMatcher<'a, 'b> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
         loop {
             match self.chars.next_back() {
@@ -52,7 +52,7 @@ impl<'a, 'b> Matcher<'a> for CharClPredLeftMatcher<'a, 'b> {
 }
 #[cfg(test)]
 mod tests {
-    use super::super::StrExt;
+    use super::super::StrSlice_;
     use std::prelude::{Vec, Iterator, DoubleEndedIterator};
 
     #[test]

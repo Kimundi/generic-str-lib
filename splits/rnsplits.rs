@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrExt};
+use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrSlice_};
 
 pub struct RNSplits<M> {
     splits: Splits<M>,

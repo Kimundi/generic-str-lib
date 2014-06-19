@@ -1,5 +1,5 @@
 use super::{Pattern, LeftMatcher, Matcher, Fragment};
-use super::util::OffsetSlice;
+use super::OffsetSlice;
 
 struct StrMatcher<'a, 'b> {
     cursor: OffsetSlice<'a>,
@@ -33,15 +33,15 @@ impl<'a, 'b> Matcher<'a> for StrMatcher<'a, 'b> {
     }
 }
 
-impl<'a, 'b> Fragment<'a, StrMatcher<'a, 'b>> for &'b str {
-    fn write_fragment(self, f: |&str|) {
-        f(self)
+impl<'b> Fragment for &'b str {
+    fn write_fragment<T>(&self, f: |&str| -> T) -> T {
+        f(*self)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::super::StrExt;
+    use super::super::StrSlice_;
     use std::prelude::{Vec, Iterator, DoubleEndedIterator};
 
     #[test]

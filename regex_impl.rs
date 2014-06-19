@@ -2,13 +2,13 @@ extern crate regex;
 use super::{Pattern, LeftMatcher};
 use self::regex::{Regex, FindMatches};
 
-struct RegexLeftMatcher<'a, 'b> {
+struct RegexMatcher<'a, 'b> {
     str: &'a str,
     regex: FindMatches<'b, 'a>
 }
-impl<'a, 'b> Pattern<'a, RegexLeftMatcher<'a, 'b>> for &'b Regex {
-    fn into_matcher(self, s: &'a str) -> RegexLeftMatcher<'a, 'b> {
-        RegexLeftMatcher {
+impl<'a, 'b> Pattern<'a, RegexMatcher<'a, 'b>> for &'b Regex {
+    fn into_matcher(self, s: &'a str) -> RegexMatcher<'a, 'b> {
+        RegexMatcher {
             str: s,
             regex: self.find_iter(s)
         }
@@ -17,7 +17,7 @@ impl<'a, 'b> Pattern<'a, RegexLeftMatcher<'a, 'b>> for &'b Regex {
         self.is_match(s)
     }
 }
-impl<'a, 'b> LeftMatcher<'a> for RegexLeftMatcher<'a, 'b> {
+impl<'a, 'b> LeftMatcher<'a> for RegexMatcher<'a, 'b> {
     fn get_haystack(&self) -> &'a str {
         self.str
     }
@@ -28,7 +28,7 @@ impl<'a, 'b> LeftMatcher<'a> for RegexLeftMatcher<'a, 'b> {
 }
 #[cfg(test)]
 mod tests {
-    use super::super::StrExt;
+    use super::super::StrSlice_;
     use super::regex::Regex;
     use std::prelude::{Vec, Iterator};
 

@@ -22,6 +22,6 @@ pub trait Matcher<'a>: LeftMatcher<'a> {
     }
 }
 
-pub trait Fragment<'a, M>: Pattern<'a, M> {
-    fn write_fragment(self, f: |&str|);
+pub trait Fragment {
+    fn write_fragment<T>(&self, f: |&str| -> T) -> T;
 }
