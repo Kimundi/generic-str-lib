@@ -1,13 +1,13 @@
-use super::{Pattern, LeftMatcher, Matcher};
+use super::{Pattern, LeftMatcher, Matcher, Fragment};
 use super::util::OffsetSlice;
 
-struct StrLeftMatcher<'a, 'b> {
+struct StrMatcher<'a, 'b> {
     cursor: OffsetSlice<'a>,
     buf: &'b [u8]
 }
-impl<'a, 'b> Pattern<'a, StrLeftMatcher<'a, 'b>> for &'b str {
-    fn into_matcher(self, s: &'a str) -> StrLeftMatcher<'a, 'b> {
-        StrLeftMatcher {
+impl<'a, 'b> Pattern<'a, StrMatcher<'a, 'b>> for &'b str {
+    fn into_matcher(self, s: &'a str) -> StrMatcher<'a, 'b> {
+        StrMatcher {
             cursor: OffsetSlice::new(s),
             buf: self.as_bytes()
         }
@@ -16,20 +16,26 @@ impl<'a, 'b> Pattern<'a, StrLeftMatcher<'a, 'b>> for &'b str {
         self.into_matcher(s).next_match().is_some()
     }
 }
-impl<'a, 'b> LeftMatcher<'a> for StrLeftMatcher<'a, 'b> {
+impl<'a, 'b> LeftMatcher<'a> for StrMatcher<'a, 'b> {
     fn get_haystack(&self) -> &'a str {
         self.cursor.original_str()
     }
 
     fn next_match(&mut self) -> Option<(uint, uint)> {
-        let StrLeftMatcher { ref mut cursor, buf } = *self;
+        let StrMatcher { ref mut cursor, buf } = *self;
         cursor.find_front(buf)
     }
 }
-impl<'a, 'b> Matcher<'a> for StrLeftMatcher<'a, 'b> {
+impl<'a, 'b> Matcher<'a> for StrMatcher<'a, 'b> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
-        let StrLeftMatcher { ref mut cursor, buf } = *self;
+        let StrMatcher { ref mut cursor, buf } = *self;
         cursor.find_back(buf)
+    }
+}
+
+impl<'a, 'b> Fragment<'a, StrMatcher<'a, 'b>> for &'b str {
+    fn write_fragment(self, f: |&str|) {
+        f(self)
     }
 }
 

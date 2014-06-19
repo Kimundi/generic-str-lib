@@ -1,9 +1,6 @@
 pub trait Pattern<'a, M> {
     fn into_matcher(self, &'a str) -> M;
     fn is_contained_in(self, &str) -> bool;
-
-    //fn is_front_match(&self, &'a str) -> bool;
-    //fn is_back_match(&self, &'a str) -> bool;
 }
 
 pub trait LeftMatcher<'a> {
@@ -23,4 +20,8 @@ pub trait Matcher<'a>: LeftMatcher<'a> {
         let string = self.get_haystack();
         self.next_match_back().map(|(a, b)| string.slice(a, b))
     }
+}
+
+pub trait Fragment<'a, M>: Pattern<'a, M> {
+    fn write_fragment(self, f: |&str|);
 }

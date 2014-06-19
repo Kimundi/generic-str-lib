@@ -1,4 +1,4 @@
-use super::{Pattern, LeftMatcher, Matcher};
+use super::{Pattern, LeftMatcher, Matcher, Fragment};
 use super::util::OffsetSlice;
 
 struct Utf8Char {
@@ -15,7 +15,7 @@ impl Utf8Char {
     }
 
     #[inline]
-    fn as_slice<'a>(&'a self) -> &'a [u8] {
+    fn as_str<'a>(&'a self) -> &'a str {
         unsafe {
             ::std::mem::transmute(::std::raw::Slice {
                 data: &self.chr as *_ as *u8,
@@ -23,15 +23,21 @@ impl Utf8Char {
             })
         }
     }
+
+    #[inline]
+    fn as_bytes<'a>(&'a self) -> &'a [u8] {
+        self.as_str().as_bytes()
+    }
+
 }
 
-struct CharLeftMatcher<'a> {
+struct CharMatcher<'a> {
     cursor: OffsetSlice<'a>,
     chr: Utf8Char
 }
-impl<'a> Pattern<'a, CharLeftMatcher<'a>> for char {
-    fn into_matcher(self, s: &'a str) -> CharLeftMatcher<'a> {
-        CharLeftMatcher {
+impl<'a> Pattern<'a, CharMatcher<'a>> for char {
+    fn into_matcher(self, s: &'a str) -> CharMatcher<'a> {
+        CharMatcher {
             cursor: OffsetSlice::new(s),
             chr: Utf8Char::new(self)
         }
@@ -40,20 +46,26 @@ impl<'a> Pattern<'a, CharLeftMatcher<'a>> for char {
         self.into_matcher(s).next_match().is_some()
     }
 }
-impl<'a> LeftMatcher<'a> for CharLeftMatcher<'a> {
+impl<'a> LeftMatcher<'a> for CharMatcher<'a> {
     fn get_haystack(&self) -> &'a str {
         self.cursor.original_str()
     }
 
     fn next_match(&mut self) -> Option<(uint, uint)> {
-        let CharLeftMatcher { ref mut cursor, chr } = *self;
-        cursor.find_front(chr.as_slice())
+        let CharMatcher { ref mut cursor, chr } = *self;
+        cursor.find_front(chr.as_bytes())
     }
 }
-impl<'a> Matcher<'a> for CharLeftMatcher<'a> {
+impl<'a> Matcher<'a> for CharMatcher<'a> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
-        let CharLeftMatcher { ref mut cursor, chr } = *self;
-        cursor.find_back(chr.as_slice())
+        let CharMatcher { ref mut cursor, chr } = *self;
+        cursor.find_back(chr.as_bytes())
+    }
+}
+
+impl<'a> Fragment<'a, CharMatcher<'a>> for char {
+    fn write_fragment(self, f: |&str|) {
+        f(Utf8Char::new(self).as_str())
     }
 }
 

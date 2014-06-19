@@ -1,4 +1,4 @@
-pub use self::traits::{Matcher, LeftMatcher, Pattern};
+pub use self::traits::{Matcher, LeftMatcher, Pattern, Fragment};
 pub use self::matches::{Matches, MatchIndices};
 pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
 
@@ -7,9 +7,9 @@ mod traits;
 mod matches;
 mod splits;
 
-mod char_matcher_impl;
-mod str_matcher_impl;
-mod regex_matcher_impl;
+mod char_impl;
+mod str_impl;
+mod regex_impl;
 mod char_closure_impl;
 mod char_fn_impl;
 mod char_slice_impl;
