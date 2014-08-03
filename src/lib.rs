@@ -1,11 +1,11 @@
-pub use self::traits::{Matcher, LeftMatcher, Pattern, Fragment};
+pub use self::traits::{Matcher, LeftMatcher, Pattern};
 pub use self::matches::{Matches, MatchIndices};
 pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
 
-// Matcher and Fragement defintions
+// Matcher definitions
 mod traits;
 
-// Matcher and Fragment implementations
+// Matcher implementations
 mod impls;
 
 #[cfg(test)]

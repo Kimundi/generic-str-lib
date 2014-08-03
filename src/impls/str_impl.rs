@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, Fragment};
+use super::super::{Pattern, LeftMatcher, Matcher};
 use super::super::OffsetSlice;
 
 struct StrMatcher<'a, 'b> {
@@ -30,12 +30,6 @@ impl<'a, 'b> Matcher<'a> for StrMatcher<'a, 'b> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
         let StrMatcher { ref mut cursor, buf } = *self;
         cursor.find_back(buf)
-    }
-}
-
-impl<'b> Fragment for &'b str {
-    fn write_fragment<T>(&self, f: |&str| -> T) -> T {
-        f(*self)
     }
 }
 

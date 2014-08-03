@@ -21,7 +21,3 @@ pub trait Matcher<'a>: LeftMatcher<'a> {
         self.next_match_back().map(|(a, b)| string.slice(a, b))
     }
 }
-
-pub trait Fragment {
-    fn write_fragment<T>(&self, f: |&str| -> T) -> T;
-}

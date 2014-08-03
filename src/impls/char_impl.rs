@@ -1,4 +1,4 @@
-use super::super::{Pattern, LeftMatcher, Matcher, Fragment};
+use super::super::{Pattern, LeftMatcher, Matcher};
 use super::super::{OffsetSlice, Utf8Char};
 
 struct CharMatcher<'a> {
@@ -30,12 +30,6 @@ impl<'a> Matcher<'a> for CharMatcher<'a> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
         let CharMatcher { ref mut cursor, chr } = *self;
         cursor.find_back(chr.as_bytes())
-    }
-}
-
-impl Fragment for char {
-    fn write_fragment<T>(&self, f: |&str| -> T) -> T {
-        f(Utf8Char::new(*self).as_str())
     }
 }
 
