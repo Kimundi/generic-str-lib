@@ -21,7 +21,7 @@ mod matches;
 mod splits;
 
 pub trait StrSlice_<'a> {
-    fn _contains<'a, M, P: Pattern<'a, M>>(self, pat: P) -> bool;
+    fn _contains<M, P: Pattern<'a, M>>(self, pat: P) -> bool;
 
     fn _matches<M, P: Pattern<'a, M>>(self, pat: P) -> Matches<M>;
     fn _match_indices<M, P: Pattern<'a, M>>(self, pat: P) -> MatchIndices<M>;
@@ -122,7 +122,7 @@ impl<'a> StrSlice_<'a> for &'a str {
 }
 
 pub trait StrAllocating_<'a> {
-    fn _replace<'a, M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String;
+    fn _replace<M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String;
 }
 
 impl<'a> StrAllocating_<'a> for &'a str {
@@ -226,7 +226,7 @@ impl Utf8Char {
     pub fn as_str<'a>(&'a self) -> &'a str {
         unsafe {
             ::std::mem::transmute(::std::raw::Slice {
-                data: &self.chr as *_ as *u8,
+                data: &self.chr as *const _ as *const u8,
                 len: self.len as uint
             })
         }
