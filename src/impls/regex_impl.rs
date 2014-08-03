@@ -1,5 +1,5 @@
 extern crate regex;
-use super::{Pattern, LeftMatcher};
+use super::super::{Pattern, LeftMatcher};
 use self::regex::{Regex, FindMatches};
 
 struct RegexMatcher<'a, 'b> {
@@ -28,7 +28,7 @@ impl<'a, 'b> LeftMatcher<'a> for RegexMatcher<'a, 'b> {
 }
 #[cfg(test)]
 mod tests {
-    use super::super::StrSlice_;
+    use super::super::super::StrSlice_;
     use super::regex::Regex;
     use std::prelude::{Vec, Iterator};
 

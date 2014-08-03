@@ -6,12 +6,7 @@ pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
 mod traits;
 
 // Matcher and Fragment implementations
-mod char_impl;
-mod str_impl;
-mod regex_impl;
-mod char_closure_impl;
-mod char_fn_impl;
-mod char_slice_impl;
+mod impls;
 
 #[cfg(test)]
 mod tests;

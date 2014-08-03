@@ -1,5 +1,5 @@
-use super::{Pattern, LeftMatcher, Matcher, Fragment};
-use super::{OffsetSlice, Utf8Char};
+use super::super::{Pattern, LeftMatcher, Matcher, Fragment};
+use super::super::{OffsetSlice, Utf8Char};
 
 struct CharMatcher<'a> {
     cursor: OffsetSlice<'a>,
@@ -41,7 +41,7 @@ impl Fragment for char {
 
 #[cfg(test)]
 mod tests {
-    use super::super::StrSlice_;
+    use super::super::super::StrSlice_;
     use std::prelude::{Vec, Iterator, DoubleEndedIterator};
 
     #[test]
