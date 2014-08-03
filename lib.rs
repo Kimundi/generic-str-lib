@@ -121,46 +121,6 @@ impl<'a> StrSlice_<'a> for &'a str {
     }
 }
 
-pub trait StrAllocating_<'a> {
-    fn _replace<M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String;
-}
-
-impl<'a> StrAllocating_<'a> for &'a str {
-    fn _replace<M: LeftMatcher<'a>, P: Pattern<'a, M>, F: Fragment>(self, pat: P, with: F) -> String {
-        let mut buf = String::new();
-        let mut first = true;
-        for segment in self._split(pat) {
-            if !first {
-                with.write_fragment(|s|
-                    buf.push_str(s)
-                );
-            }
-            first = false;
-            buf.push_str(segment);
-        }
-        buf
-    }
-}
-
-pub trait StringExtension {
-    fn from_fragment<F: Fragment>(f: F) -> Self;
-    fn push<F: Fragment>(&mut self, f: F);
-}
-
-impl StringExtension for String {
-    fn from_fragment<F: Fragment>(f: F) -> String {
-        f.write_fragment(|s|
-            String::from_str(s)
-        )
-    }
-
-    fn push<F: Fragment>(&mut self, f: F) {
-        f.write_fragment(|s|
-            self.push_str(s)
-        )
-    }
-}
-
 pub struct OffsetSlice<'a> {
     slice: &'a str,
     start: uint,
