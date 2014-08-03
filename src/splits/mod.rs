@@ -1,4 +1,7 @@
-use super::{Pattern, LeftMatcher, Matcher, StrSlice_};
+use super::{Pattern, LeftMatcher, Matcher};
+
+#[cfg(test)]
+use super::StrSlice_;
 
 pub use self::nsplits::NSplits;
 pub use self::rnsplits::RNSplits;

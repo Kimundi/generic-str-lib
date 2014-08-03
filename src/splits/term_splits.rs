@@ -1,5 +1,6 @@
-use super::super::{Pattern, LeftMatcher, Matcher, Splits, StrSlice_};
+use super::super::{Pattern, LeftMatcher, Matcher, Splits};
 use super::{splits_next, splits_next_back};
+#[cfg(test)] use super::super::StrSlice_;
 
 pub struct TermSplits<M> {
     splits: Splits<M>

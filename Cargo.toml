@@ -1,0 +1,10 @@
+[package]
+
+name = "generic_str_lib"
+version = "0.1.0"
+authors = [ "loebel.marvin@gmail.com" ]
+
+[[lib]]
+
+name = "generic_str_lib"
+path = "src/lib.rs"
