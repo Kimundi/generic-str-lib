@@ -63,61 +63,53 @@ mod tests {
     fn test1() {
         let s = "abcbdef";
         fn f(c: char) -> bool { c == 'c' }
-        assert_eq!(s._match_indices(f).collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices(f), [(2u, "c")]);
     }
 
     #[test]
     fn test2() {
         let s = "abcbdef";
         fn f(c: char) -> bool { c == 'b' }
-        assert_eq!(s._match_indices(f).collect::<Vec<_>>(),
-                    vec![(1u, 2u), (3, 4)]);
+        iter_eq!(s._match_indices(f), [(1u, "b"), (3, "b")]);
     }
 
     #[test]
     fn test3() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
         fn f(c: char) -> bool { c == 'm' || c == 'r' || c == 'd' }
-        assert_eq!(s._match_indices(f).collect::<Vec<_>>(),
-                    vec![(27, 28), (32, 33), (37, 38), (50u, 51u), (63, 64)]);
+        iter_eq!(s._match_indices(f),
+                 [(27, "m"), (32, "r"), (37, "d"), (50u, "m"), (63, "m")]);
 
-        assert_eq!(s._matches(f).collect::<Vec<_>>(),
-                    vec!["m", "r", "d", "m", "m"]);
+        iter_eq!(s._matches(f), ["m", "r", "d", "m", "m"]);
 
         fn g(c: char) -> bool { c == '中' }
-        assert_eq!(s._match_indices(g).collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
+        iter_eq!(s._match_indices(g), [(12u, "中")]);
     }
 
     #[test]
     fn test1_rev() {
         let s = "abcbdef";
         fn f(c: char) -> bool { c == 'c' }
-        assert_eq!(s._match_indices(f).rev().collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices(f).rev(), [(2u, "c")]);
     }
 
     #[test]
     fn test2_rev() {
         let s = "abcbdef";
         fn f(c: char) -> bool { c == 'b' }
-        assert_eq!(s._match_indices(f).rev().collect::<Vec<_>>(),
-                    vec![(3u, 4u), (1, 2)]);
+        iter_eq!(s._match_indices(f).rev(), [(3u, "b"), (1, "b")]);
     }
 
     #[test]
     fn test3_rev() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
         fn f(c: char) -> bool { c == 'm' || c == 'r' || c == 'd' }
-        assert_eq!(s._match_indices(f).rev().collect::<Vec<_>>(),
-                    vec![(63, 64), (50u, 51u), (37, 38), (32, 33), (27, 28)]);
+        iter_eq!(s._match_indices(f).rev(),
+                 [(63, "m"), (50u, "m"), (37, "d"), (32, "r"), (27, "m")]);
 
-        assert_eq!(s._matches(f).rev().collect::<Vec<_>>(),
-                    vec!["m", "m", "d", "r", "m"]);
+        iter_eq!(s._matches(f).rev(), ["m", "m", "d", "r", "m"]);
 
         fn g(c: char) -> bool { c == '中' }
-        assert_eq!(s._match_indices(g).rev().collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
+        iter_eq!(s._match_indices(g).rev(), [(12u, "中")]);
     }
 }

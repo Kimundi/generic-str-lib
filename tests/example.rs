@@ -35,7 +35,7 @@ fn test_all() {
     // (The Regex is used by reference because that's how its iterators work)
     static REGEX_1: &'static Regex = &regex!("ba.");
     iter_eq!(s._matches(REGEX_1), ["bar", "baz"]);
-    iter_eq!(s._match_indices(REGEX_1), [(4u, 7u), (8, 11)]);
+    iter_eq!(s._match_indices(REGEX_1), [(4u, "bar"), (8, "baz")]);
 
     static REGEX_2: Regex = regex!("u+");
     assert_eq!(s._find(&REGEX_2), Some(14));

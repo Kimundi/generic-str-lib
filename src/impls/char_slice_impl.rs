@@ -60,54 +60,44 @@ mod tests {
     #[test]
     fn test1() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices(['c'].as_slice()).collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices(['c'].as_slice()), [(2u, "c")]);
     }
 
     #[test]
     fn test2() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices(['b'].as_slice()).collect::<Vec<_>>(),
-                    vec![(1u, 2u), (3, 4)]);
+        iter_eq!(s._match_indices(['b'].as_slice()), [(1u, "b"), (3, "b")]);
     }
 
     #[test]
     fn test3() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
-        assert_eq!(s._match_indices(['m', 'r', 'd'].as_slice()).collect::<Vec<_>>(),
-                    vec![(27, 28), (32, 33), (37, 38), (50u, 51u), (63, 64)]);
+        iter_eq!(s._match_indices(['m', 'r', 'd'].as_slice()),
+                 [(27, "m"), (32, "r"), (37, "d"), (50u, "m"), (63, "m")]);
 
-        assert_eq!(s._matches(['m', 'r', 'd'].as_slice()).collect::<Vec<_>>(),
-                    vec!["m", "r", "d", "m", "m"]);
-
-        assert_eq!(s._match_indices(['中'].as_slice()).collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
+        iter_eq!(s._matches(['m', 'r', 'd'].as_slice()), ["m", "r", "d", "m", "m"]);
+        iter_eq!(s._match_indices(['中'].as_slice()), [(12u, "中")]);
     }
 
     #[test]
     fn test1_rev() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices(['c'].as_slice()).rev().collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices(['c'].as_slice()).rev(), [(2u, "c")]);
     }
 
     #[test]
     fn test2_rev() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices(['b'].as_slice()).rev().collect::<Vec<_>>(),
-                    vec![(3u, 4u), (1, 2)]);
+        iter_eq!(s._match_indices(['b'].as_slice()).rev(), [(3u, "b"), (1, "b")]);
     }
 
     #[test]
     fn test3_rev() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
-        assert_eq!(s._match_indices(['m', 'r', 'd'].as_slice()).rev().collect::<Vec<_>>(),
-                    vec![(63, 64), (50u, 51u), (37, 38), (32, 33), (27, 28)]);
+        iter_eq!(s._match_indices(['m', 'r', 'd'].as_slice()).rev(),
+                 [(63, "m"), (50u, "m"), (37, "d"), (32, "r"), (27, "m")]);
 
-        assert_eq!(s._matches(['m', 'r', 'd'].as_slice()).rev().collect::<Vec<_>>(),
-                    vec!["m", "m", "d", "r", "m"]);
-
-        assert_eq!(s._match_indices(['中'].as_slice()).rev().collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
+        iter_eq!(s._matches(['m', 'r', 'd'].as_slice()).rev(), ["m", "m", "d", "r", "m"]);
+        iter_eq!(s._match_indices(['中'].as_slice()).rev(), [(12u, "中")]);
     }
 }

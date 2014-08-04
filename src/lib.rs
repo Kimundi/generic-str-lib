@@ -1,6 +1,19 @@
+#![feature(macro_rules)]
+
 pub use self::traits::{Matcher, LeftMatcher, Pattern};
 pub use self::matches::{Matches, MatchIndices};
 pub use self::splits::{Splits, NSplits, RNSplits, TermSplits};
+
+// Helper macro for unit tests
+macro_rules! iter_eq {
+    ($i:expr, $s:expr) => {
+        {
+            let i: Vec<_> = $i.collect();
+            let s = $s;
+            assert_eq!(i.as_slice(), s.as_slice());
+        }
+    }
+}
 
 // Matcher definitions
 mod traits;
@@ -65,14 +78,16 @@ impl<'a> StrSlice_<'a> for &'a str {
         RNSplits::new(self, pat, n)
     }
     fn _starts_with<M: LeftMatcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> bool {
-        self._match_indices(pat).next().map(|(a, _)| a == 0).unwrap_or(false)
+        self._match_indices(pat).next()
+            .map(|(a, _)| a == 0).unwrap_or(false)
     }
     fn _ends_with<M: Matcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> bool {
-        self._match_indices(pat).rev().next().map(|(_, b)| b == self.len()).unwrap_or(false)
+        self._match_indices(pat).rev().next()
+            .map(|(a, s)| a + s.len() == self.len()).unwrap_or(false)
     }
     fn _trim_left_matches<M: LeftMatcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> &'a str {
         let mut i = 0;
-        for (a, b) in self._match_indices(pat) {
+        for (a, b) in self._match_indices(pat).map(|(a, s)| (a, a + s.len())) {
             if a == i {
                 i = b;
             } else {
@@ -83,7 +98,7 @@ impl<'a> StrSlice_<'a> for &'a str {
     }
     fn _trim_right_matches<M: Matcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> &'a str {
         let mut i = self.len();
-        for (a, b) in self._match_indices(pat).rev() {
+        for (a, b) in self._match_indices(pat).rev().map(|(a, s)| (a, a + s.len())) {
             if b == i {
                 i = a;
             } else {
@@ -93,7 +108,7 @@ impl<'a> StrSlice_<'a> for &'a str {
         self.slice_to(i)
     }
     fn _trim_matches<M: Matcher<'a>, P: Pattern<'a, M>>(self, pat: P) -> &'a str {
-        let mut match_indices = self._match_indices(pat);
+        let mut match_indices = self._match_indices(pat).map(|(a, s)| (a, a + s.len()));
         let mut i = 0;
         let mut possible_end_match = None;
         for (a, b) in match_indices {

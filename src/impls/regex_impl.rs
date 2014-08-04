@@ -37,47 +37,40 @@ mod tests {
     fn test1() {
         let s = "abcbdef";
         let r = Regex::new("c").unwrap();
-        assert_eq!(s._match_indices(&r).collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices(&r), [(2u, "c")]);
     }
 
     #[test]
     fn test2() {
         let s = "abcbdef";
         let r = Regex::new("b").unwrap();
-        assert_eq!(s._match_indices(&r).collect::<Vec<_>>(),
-                    vec![(1u, 2u), (3, 4)]);
+        iter_eq!(s._match_indices(&r), [(1u, "b"), (3, "b")]);
     }
 
     #[test]
     fn test3() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
         let r = Regex::new("a[mrd]").unwrap();
-        assert_eq!(s._match_indices(&r).collect::<Vec<_>>(),
-                    vec![(26, 28), (31, 33), (36, 38), (49u, 51u), (62, 64)]);
-        assert_eq!(s._matches(&r).collect::<Vec<_>>(),
-                    vec!["am", "ar", "ad", "am", "am"]);
+        iter_eq!(s._match_indices(&r),
+                 [(26, "am"), (31, "ar"), (36, "ad"), (49u, "am"), (62, "am")]);
+        iter_eq!(s._matches(&r), ["am", "ar", "ad", "am", "am"]);
 
         let r = Regex::new("中").unwrap();
-        assert_eq!(s._match_indices(&r).collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
-
+        iter_eq!(s._match_indices(&r), [(12u, "中")]);
     }
 
     #[test]
     fn splitn() {
         let re = Regex::new(r"\d+").unwrap();
-        let text = "cauchy123plato456tyler789binx";
-        let subs: Vec<&str> = text._splitn(&re, 2).collect();
-        assert_eq!(subs, vec!("cauchy", "plato", "tyler789binx"));
+        let s = "cauchy123plato456tyler789binx";
+        iter_eq!(s._splitn(&re, 2), ["cauchy", "plato", "tyler789binx"]);
     }
 
     #[test]
     fn split() {
         let re = Regex::new(r"\d+").unwrap();
-        let text = "cauchy123plato456tyler789binx";
-        let subs: Vec<&str> = text._split(&re).collect();
-        assert_eq!(subs, vec!("cauchy", "plato", "tyler", "binx"));
+        let s = "cauchy123plato456tyler789binx";
+        iter_eq!(s._split(&re), ["cauchy", "plato", "tyler", "binx"]);
     }
 
     #[test]

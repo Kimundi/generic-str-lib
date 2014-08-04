@@ -41,32 +41,26 @@ mod tests {
     #[test]
     fn test1() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices('c').collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
-        assert_eq!(s._match_indices('c').rev().collect::<Vec<_>>(),
-                    vec![(2u, 3u)]);
+        iter_eq!(s._match_indices('c'), [(2u, "c")]);
+        iter_eq!(s._match_indices('c').rev(), [(2u, "c")]);
     }
 
     #[test]
     fn test2() {
         let s = "abcbdef";
-        assert_eq!(s._match_indices('b').collect::<Vec<_>>(),
-                    vec![(1u, 2u), (3, 4)]);
-        assert_eq!(s._match_indices('b').rev().collect::<Vec<_>>(),
-                    vec![(3, 4), (1u, 2u)]);
+        iter_eq!(s._match_indices('b'), [(1u, "b"), (3, "b")]);
+        iter_eq!(s._match_indices('b').rev(), [(3, "b"), (1u, "b")]);
     }
 
     #[test]
     fn test3() {
         let s = "ศไทย中华Việt Nam; Mary had a little lamb, Little lamb";
-        assert_eq!(s._match_indices('a').collect::<Vec<_>>(),
-                    vec![(26, 27), (31, 32), (36, 37), (39, 40), (49u, 50u), (62, 63)]);
-        assert_eq!(s._match_indices('a').rev().collect::<Vec<_>>(),
-                    vec![(62, 63), (49u, 50u), (39, 40), (36, 37), (31, 32), (26, 27)]);
+        iter_eq!(s._match_indices('a'),
+                 [(26, "a"), (31, "a"), (36, "a"), (39, "a"), (49u, "a"), (62, "a")]);
+        iter_eq!(s._match_indices('a').rev(),
+                 [(62, "a"), (49u, "a"), (39, "a"), (36, "a"), (31, "a"), (26, "a")]);
 
-        assert_eq!(s._match_indices('中').collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
-        assert_eq!(s._match_indices('中').rev().collect::<Vec<_>>(),
-                    vec![(12u, 15u)]);
+        iter_eq!(s._match_indices('中'), [(12u, "中")]);
+        iter_eq!(s._match_indices('中').rev(), [(12u, "中")]);
     }
 }
