@@ -36,7 +36,8 @@ fn splits_next<'a, M: LeftMatcher<'a>>(self_: &mut Splits<M>) -> Option<(uint, u
     // In case of overlapping matches, consider them one big seperator
     loop {
         match self_.matcher.next_match() {
-            Some((a, b)) => {
+            Some((a, s)) => {
+                let b = a + s.len();
                 let current_prev_start = self_.prev_start;
                 self_.prev_start = b;
                 if current_prev_start <= a {
@@ -58,7 +59,8 @@ fn splits_next_back<'a, M: Matcher<'a>>(self_: &mut Splits<M>) -> Option<(uint, 
         // In case of overlapping matches, consider them one big seperator
         loop {
             match self_.matcher.next_match_back() {
-                Some((a, b)) => {
+                Some((a, s)) => {
+                    let b = a + s.len();
                     let current_prev_end = self_.prev_end;
                     self_.prev_end = a;
                     if b <= current_prev_end {

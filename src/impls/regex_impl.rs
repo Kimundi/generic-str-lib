@@ -22,8 +22,8 @@ impl<'a, 'b> LeftMatcher<'a> for RegexMatcher<'a, 'b> {
         self.str
     }
 
-    fn next_match(&mut self) -> Option<(uint, uint)> {
-        self.regex.next()
+    fn next_match(&mut self) -> Option<(uint, &'a str)> {
+        self.regex.next().map(|(a, b)| (a, self.str.slice(a, b))) // TODO
     }
 }
 #[cfg(test)]

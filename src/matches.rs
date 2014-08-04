@@ -13,13 +13,13 @@ impl<M> Matches<M> {
 
 impl<'a, M: LeftMatcher<'a>> Iterator<&'a str> for Matches<M> {
     fn next(&mut self) -> Option<&'a str> {
-        self.matcher.next_match_str()
+        self.matcher.next_match().map(|(_, s)| s)
     }
 }
 
 impl<'a, M: Matcher<'a>> DoubleEndedIterator<&'a str> for Matches<M> {
     fn next_back(&mut self) -> Option<&'a str> {
-        self.matcher.next_match_back_str()
+        self.matcher.next_match_back().map(|(_, s)| s)
     }
 }
 
@@ -34,14 +34,16 @@ impl<M> MatchIndices<M> {
     }
 }
 
+// TODO: change to (uint, &str) for more consistency
+
 impl<'a, M: LeftMatcher<'a>> Iterator<(uint, uint)> for MatchIndices<M> {
     fn next(&mut self) -> Option<(uint, uint)> {
-        self.matcher.next_match()
+        self.matcher.next_match().map(|(a, s)| (a, a + s.len()))
     }
 }
 
 impl<'a, M: Matcher<'a>> DoubleEndedIterator<(uint, uint)> for MatchIndices<M> {
     fn next_back(&mut self) -> Option<(uint, uint)> {
-        self.matcher.next_match_back()
+        self.matcher.next_match_back().map(|(a, s)| (a, a + s.len()))
     }
 }

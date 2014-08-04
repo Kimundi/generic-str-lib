@@ -23,11 +23,13 @@ impl<'a> LeftMatcher<'a> for CharFnPredLeftMatcher<'a> {
         self.str
     }
 
-    fn next_match(&mut self) -> Option<(uint, uint)> {
+    fn next_match(&mut self) -> Option<(uint, &'a str)> {
         loop {
             match self.chars.next() {
                 Some((i, c)) if (self.pred)(c) => {
-                    return Some((i, i + c.len_utf8_bytes()))
+                    let a = i;
+                    let b = i + c.len_utf8_bytes();
+                    return Some((a, self.str.slice(a, b)))
                 }
                 Some(_) => continue,
                 None => break,
@@ -37,11 +39,13 @@ impl<'a> LeftMatcher<'a> for CharFnPredLeftMatcher<'a> {
     }
 }
 impl<'a> Matcher<'a> for CharFnPredLeftMatcher<'a> {
-    fn next_match_back(&mut self) -> Option<(uint, uint)> {
+    fn next_match_back(&mut self) -> Option<(uint, &'a str)> {
         loop {
             match self.chars.next_back() {
                 Some((i, c)) if (self.pred)(c) => {
-                    return Some((i, i + c.len_utf8_bytes()))
+                    let a = i;
+                    let b = i + c.len_utf8_bytes();
+                    return Some((a, self.str.slice(a, b)))
                 }
                 Some(_) => continue,
                 None => break,

@@ -21,13 +21,13 @@ impl<'a, 'b> LeftMatcher<'a> for StrMatcher<'a, 'b> {
         self.cursor.original_str()
     }
 
-    fn next_match(&mut self) -> Option<(uint, uint)> {
+    fn next_match(&mut self) -> Option<(uint, &'a str)> {
         let StrMatcher { ref mut cursor, buf } = *self;
         cursor.find_front(buf)
     }
 }
 impl<'a, 'b> Matcher<'a> for StrMatcher<'a, 'b> {
-    fn next_match_back(&mut self) -> Option<(uint, uint)> {
+    fn next_match_back(&mut self) -> Option<(uint, &'a str)> {
         let StrMatcher { ref mut cursor, buf } = *self;
         cursor.find_back(buf)
     }
