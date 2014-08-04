@@ -140,12 +140,13 @@ impl<'a> OffsetSlice<'a> {
             let start = self.start;
             self.start += 1;
 
-            let buf_eq;
             unsafe {
-                buf_eq = raw::slice_unchecked(self.slice, start, start + buf.len())
-            }
-            if buf_eq == buf {
-                return Some((start, buf_eq));
+                // This can slice between utf8 boundaries, but `eq` on
+                // strings just compares bytes, so it should be fine.
+                let buf_eq = raw::slice_unchecked(self.slice, start, start + buf.len());
+                if buf_eq == buf {
+                    return Some((start, buf_eq));
+                }
             }
         }
         None
@@ -159,12 +160,13 @@ impl<'a> OffsetSlice<'a> {
             let end = self.end;
             self.end -= 1;
 
-            let buf_eq;
             unsafe {
-                buf_eq = raw::slice_unchecked(self.slice, end - buf.len(), end)
-            }
-            if buf_eq == buf {
-                return Some((end - buf.len(), buf_eq));
+                // This can slice between utf8 boundaries, but `eq` on
+                // strings just compares bytes, so it should be fine.
+                let buf_eq = raw::slice_unchecked(self.slice, end - buf.len(), end);
+                if buf_eq == buf {
+                    return Some((end - buf.len(), buf_eq));
+                }
             }
         }
         None
