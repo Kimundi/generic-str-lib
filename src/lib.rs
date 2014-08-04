@@ -198,10 +198,4 @@ impl Utf8Char {
             })
         }
     }
-
-    #[inline]
-    pub fn as_bytes<'a>(&'a self) -> &'a [u8] {
-        self.as_str().as_bytes()
-    }
-
 }
