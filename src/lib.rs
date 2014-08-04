@@ -184,18 +184,17 @@ pub struct Utf8Char {
 impl Utf8Char {
     #[inline]
     pub fn new(chr: char) -> Utf8Char {
-        let mut buf = [08, ..4];
+        let mut buf = [0, ..4];
         let len = chr.encode_utf8(buf.as_mut_slice());
         Utf8Char { chr: buf, len: len as u8 }
     }
 
     #[inline]
     pub fn as_str<'a>(&'a self) -> &'a str {
+        use std::str::raw;
         unsafe {
-            ::std::mem::transmute(::std::raw::Slice {
-                data: &self.chr as *const _ as *const u8,
-                len: self.len as uint
-            })
+            let s = raw::from_utf8(self.chr);
+            raw::slice_unchecked(s, 0, self.len as uint)
         }
     }
 }
