@@ -194,23 +194,37 @@ impl<'a> OffsetSlice<'a> {
 }
 
 pub struct Utf8Char {
-    chr: [u8, ..4],
-    len: u8
+    buf: [u8, ..4]
 }
 
 impl Utf8Char {
     #[inline]
-    pub fn new(chr: char) -> Utf8Char {
+    pub fn new(c: char) -> Utf8Char {
         let mut buf = [0, ..4];
-        Utf8Char { len: chr.encode_utf8(buf.as_mut_slice()) as u8, chr: buf }
+        c.encode_utf8(buf.as_mut_slice());
+        Utf8Char { buf: buf }
     }
 
     #[inline]
     pub fn as_str<'a>(&'a self) -> &'a str {
         use std::str::raw;
         unsafe {
-            let s = raw::from_utf8(self.chr);
-            raw::slice_unchecked(s, 0, self.len as uint)
+            let s = raw::from_utf8(self.buf);
+            raw::slice_unchecked(s, 0, self.utf8_len())
+        }
+    }
+
+    #[inline]
+    pub fn utf8_len(self) -> uint {
+        let b = unsafe { *self.buf.as_ptr() };
+        if b <= 0x7F {
+            1
+        } else if b <= 0xDF {
+            2
+        } else if b <= 0xEF {
+            3
+        } else {
+            4
         }
     }
 }
