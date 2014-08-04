@@ -202,8 +202,7 @@ impl Utf8Char {
     #[inline]
     pub fn new(chr: char) -> Utf8Char {
         let mut buf = [0, ..4];
-        let len = chr.encode_utf8(buf.as_mut_slice());
-        Utf8Char { chr: buf, len: len as u8 }
+        Utf8Char { len: chr.encode_utf8(buf.as_mut_slice()) as u8, chr: buf }
     }
 
     #[inline]
