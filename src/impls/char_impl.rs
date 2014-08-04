@@ -23,13 +23,13 @@ impl<'a> LeftMatcher<'a> for CharMatcher<'a> {
 
     fn next_match(&mut self) -> Option<(uint, uint)> {
         let CharMatcher { ref mut cursor, chr } = *self;
-        cursor.find_front(chr.as_bytes())
+        cursor.find_front(chr.as_str())
     }
 }
 impl<'a> Matcher<'a> for CharMatcher<'a> {
     fn next_match_back(&mut self) -> Option<(uint, uint)> {
         let CharMatcher { ref mut cursor, chr } = *self;
-        cursor.find_back(chr.as_bytes())
+        cursor.find_back(chr.as_str())
     }
 }
 

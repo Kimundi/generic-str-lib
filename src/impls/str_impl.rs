@@ -3,13 +3,13 @@ use super::super::OffsetSlice;
 
 struct StrMatcher<'a, 'b> {
     cursor: OffsetSlice<'a>,
-    buf: &'b [u8]
+    buf: &'b str
 }
 impl<'a, 'b> Pattern<'a, StrMatcher<'a, 'b>> for &'b str {
     fn into_matcher(self, s: &'a str) -> StrMatcher<'a, 'b> {
         StrMatcher {
             cursor: OffsetSlice::new(s),
-            buf: self.as_bytes()
+            buf: self
         }
     }
     fn is_contained_in(self, s: &str) -> bool {

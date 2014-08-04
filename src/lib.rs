@@ -133,12 +133,12 @@ impl<'a> OffsetSlice<'a> {
     }
 
     #[inline]
-    pub fn find_front(&mut self, buf: &[u8]) -> Option<(uint, uint)> {
+    pub fn find_front(&mut self, buf: &str) -> Option<(uint, uint)> {
         while self.start < self.end {
             let start = self.start;
             self.start += 1;
 
-            if self.slice.as_bytes().slice_from(start).starts_with(buf) {
+            if self.slice.as_bytes().slice_from(start).starts_with(buf.as_bytes()) {
                 return Some((start, start + buf.len()));
             }
         }
@@ -146,12 +146,12 @@ impl<'a> OffsetSlice<'a> {
     }
 
     #[inline]
-    pub fn find_back(&mut self, buf: &[u8]) -> Option<(uint, uint)> {
+    pub fn find_back(&mut self, buf: &str) -> Option<(uint, uint)> {
         while self.start < self.end {
             let end = self.end;
             self.end -= 1;
 
-            if self.slice.as_bytes().slice_to(end).ends_with(buf) {
+            if self.slice.as_bytes().slice_to(end).ends_with(buf.as_bytes()) {
                 return Some((end - buf.len(), end));
             }
         }
