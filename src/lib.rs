@@ -134,14 +134,18 @@ impl<'a> OffsetSlice<'a> {
 
     #[inline]
     pub fn find_front(&mut self, buf: &str) -> Option<(uint, &'a str)> {
-        while self.start < self.end {
+        use std::str::raw;
+
+        while self.start + buf.len() <= self.end {
             let start = self.start;
             self.start += 1;
 
-            if self.slice.as_bytes().slice_from(start).starts_with(buf.as_bytes()) {
-                let a = start;
-                let b = start + buf.len();
-                return Some((a, self.slice.slice(a, b))); // TODO
+            let buf_eq;
+            unsafe {
+                buf_eq = raw::slice_unchecked(self.slice, start, start + buf.len())
+            }
+            if buf_eq == buf {
+                return Some((start, buf_eq));
             }
         }
         None
@@ -149,14 +153,18 @@ impl<'a> OffsetSlice<'a> {
 
     #[inline]
     pub fn find_back(&mut self, buf: &str) -> Option<(uint, &'a str)> {
-        while self.start < self.end {
+        use std::str::raw;
+
+        while self.start + buf.len() <= self.end {
             let end = self.end;
             self.end -= 1;
 
-            if self.slice.as_bytes().slice_to(end).ends_with(buf.as_bytes()) {
-                let a = end - buf.len();
-                let b = end;
-                return Some((a, self.slice.slice(a, b))); // TODO
+            let buf_eq;
+            unsafe {
+                buf_eq = raw::slice_unchecked(self.slice, end - buf.len(), end)
+            }
+            if buf_eq == buf {
+                return Some((end - buf.len(), buf_eq));
             }
         }
         None
